@@ -1,12 +1,19 @@
-import Navbar from "./components/Navbar/Navbar"
+import { useLocation } from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar";
+import AppRoutes from "./routes/AppRoutes";
+import "./ui/colors.css";
 
-function App() {
+function App(){
+
+  const location=useLocation();
+  const isAuth=location.pathname === "/auth";
+
   return (
     <>
-      <Navbar />
-      <h1>Home Page</h1>
+      {!isAuth && <Navbar />}
+      <AppRoutes />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -7,7 +7,13 @@ import ThemeToggle from "./ThemeToggle"
 import ProfileIcon from "./ProfileIcon"
 import "./Navbar.css"
 
+import { useLocation } from "react-router-dom"
+
 function Navbar() {
+
+  const location=useLocation()
+
+  const isHome=location.pathname==="/"
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -23,8 +29,8 @@ function Navbar() {
         <div className="nav-right">
           <ExploreCourses />
           <BecomeTutor />
-          <CartIcon />
           <ThemeToggle />
+          <CartIcon />
           <ProfileIcon />
         </div>
 

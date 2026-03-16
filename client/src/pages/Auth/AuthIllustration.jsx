@@ -1,0 +1,21 @@
+function AuthIllustration(){
+  return(
+    <div className="auth-illustration">
+      <div className="image-card">
+        <img src="/classroom.jpg" alt="classroom" />
+      </div>
+
+      <div className="stats-card">
+        <div className="stats-icon">✔</div>
+
+        <div>
+          <h3>5,000+</h3>
+          <p>Courses Available</p>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+export default AuthIllustration;

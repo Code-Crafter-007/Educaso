@@ -12,12 +12,9 @@ body{
 
 .navbar{
   width:100%;
-  background: #ffffff;
+  background:#ffffff;
   border-bottom:1px solid #e5e7eb;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 1px 4px rgba(0, 0, 0, 0.06);
+  box-shadow:0 1px 4px rgba(0,0,0,0.06);
 }
 
 .navbar-container {
@@ -26,7 +23,12 @@ body{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 100px;
+  gap: 20px;
+}
+.sticky-navbar{
+  position: sticky;
+  top:0;
+  z-index:100;
 }
 
 .nav-left {
