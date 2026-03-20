@@ -62,18 +62,13 @@ dotenv.config();
 //signup
 export const signup = async (req, res) => {
     //Data fetch and validate
-    const {firstName , lastName , email , password , confirmPassword , accountType} = req.body //opt wala hata diya hai
-    if(!firstName || !lastName || !email || !password || !confirmPassword || !accountType){ //opt wala hata diya hai
-        return res.status(400).json({success:false , message : "Incomplete credentials"})
+   const { firstName, lastName, email, password, } = req.body  // frontend mai forrgetten password nhi liye hai
+
+    if(!firstName || !lastName || !email || !password ) { // frontend mai account type nhi liye 
+    return res.status(400).json({ success: false, message: "Incomplete credentials" })
     }
 
     try {
-        //password match
-        if(password!==confirmPassword){
-            return res
-            .status(400)
-            .json({ success: false, message: "passwords not match to each other " });
-        }
 
         //Check existing user
         const existingUser = await User.findOne({email})
@@ -110,11 +105,14 @@ export const signup = async (req, res) => {
             about : null
         })
 
-        const user = new User({
-            firstName , lastName  , email , password : hashedPassword , accountType ,
-            additionalDetails : profileDetails._id ,
-            image : `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
-        })
+        const user = new User({ // yaha bhi confirmed password wla hata diye hai
+        firstName, 
+        lastName, 
+        email, 
+        password: hashedPassword,
+        additionalDetails: profileDetails._id,
+        image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
+})
         await user.save() 
 
         let token = jwt.sign({id : user._id , email: user.email, accountType : user.accountType} , process.env.JWT_SECRET , {expiresIn : '7d'})
