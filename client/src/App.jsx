@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import AppRoutes from "./routes/AppRoutes";
 import "./ui/colors.css";
+import "./styles/animations.css"
 
 function App(){
 

@@ -5,7 +5,12 @@ import facebook from "../../assets/icons/facebook.png";
 import x from "../../assets/icons/x.png";
 import twitter from "../../assets/icons/twitter.png"
 
+import { useState } from "react";
+
 function LoginPage({switchMode}){
+
+  const [arjun,setArjun]=useState(false)
+
   return (
 
     <div className="login-page">
@@ -45,7 +50,7 @@ function LoginPage({switchMode}){
 
 </div>
 
-      <button className="primary-btn">Sign In</button>
+      <button className="primary-btn" >Sign In</button>
 
       <div className="divider">
         <span className="line"></span>
