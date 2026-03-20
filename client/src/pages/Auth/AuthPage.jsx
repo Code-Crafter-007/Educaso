@@ -11,6 +11,7 @@ function AuthPage() {
   const [displayMode,setDisplayMode] = useState("login");
   const [animationIn,setAnimationIn]=useState(false)
   const [animating,setAnimating]=useState(false);
+  
 
 
   // const switchMode=(newMode)=>{

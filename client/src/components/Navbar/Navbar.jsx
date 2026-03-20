@@ -14,6 +14,7 @@ function Navbar() {
   const location=useLocation()
 
   const isHome=location.pathname==="/"
+  
   return (
     <nav className="navbar">
       <div className="navbar-container">

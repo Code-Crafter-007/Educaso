@@ -109,6 +109,7 @@
   accent-color: #10b981;
   cursor:pointer;
 }
+
 .link{
   color:#10b981;
   cursor:pointer;
@@ -125,10 +126,23 @@
   transition: all 0.25s ease;
 }
 
+.primary-btn :disabled{
+
+  opacity: 0.67;
+  cursor: not-allowed;
+}
+
 .primary-btn:hover{
   transform: scale(1.02); 
   filter: brightness(1.1);
   box-shadow:0 10px 25px rgba(16,185,129,0.35);
+}
+
+.error-msg {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .divider{
@@ -221,15 +235,27 @@
 }
 
 .image-card {
-  width: 90%;             
+  width: 100%;             
   max-width: 420px;     
-  aspect-ratio:15/10;
+  aspect-ratio:12/10;
   padding: 20px;
   border-radius: 25px;
   background:rgba(255, 255, 255, 0.25);
   backdrop-filter:blur(12px);
   box-shadow:0 20px 40px rgba(0,0,0,0.15);
   position:relative;
+}
+
+.image-card img {
+  width:100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+  filter: brightness(0.8);
+  border: 0.5px solid rgb(64,31,11,0.5);
+  box-shadow: 0 0 15px rgba(64,31, 13, 0.3);
+  
 }
 
 .stats-card{
@@ -243,26 +269,6 @@
   gap:12px;
   align-items:center;
   box-shadow:0 15px 30px rgba(0,0,0,0.15);
-}
-
-.image-card{
-  width:420px;
-  padding:20px;
-  border-radius:25px;
-  background:rgba(255,255,255,0.2);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-}
-
-.image-card img {
-  width:100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 20px;
-  display: block;
-  filter: brightness(0.8);
-  border: 0.5px solid rgb(64,31,11,0.5);
-  box-shadow: 0 0 15px rgba(64,31, 13, 0.3);
-  
 }
 
 .auth-form{

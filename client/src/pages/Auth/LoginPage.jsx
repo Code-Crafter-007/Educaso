@@ -1,15 +1,59 @@
-import logo from "../../assets/logo.png";
+import {loginUser} from "../../services/authService";
 
+import logo from "../../assets/logo.png";
 import google from "../../assets/icons/google.svg";
 import facebook from "../../assets/icons/facebook.png";
 import x from "../../assets/icons/x.png";
 import twitter from "../../assets/icons/twitter.png"
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage({switchMode}){
 
-  const [arjun,setArjun]=useState(false)
+  const [email,setEmail]=useState("")
+  const [password, setPassword]=useState("");
+  const [error,setError]=useState("")
+  const [loading,setLoading]=useState(false)
+  const navigate = useNavigate()
+
+  const handleLogin = async()=>{
+
+    setError("")
+
+    if(!email || !password){
+      setError("Please fill all fields!.")
+      return;
+    }
+
+    try{
+      setLoading(true)
+
+      const data=await loginUser(email,password);
+
+      if(!data || !data.token){
+
+        throw new Error("Invalid credentials")
+      }
+
+      localStorage.setItem("token",data.token);
+      localStorage.setItem("user",JSON.stringify(data.user))
+
+      navigate("/dashboard");
+    }
+
+    catch(err){
+
+      setError(err.message || "Login Failed");
+    }
+
+    finally{
+      setLoading(false);
+
+    }
+
+};
+
 
   return (
 
@@ -35,9 +79,11 @@ function LoginPage({switchMode}){
 
       <label htmlFor="email">Email Adress</label>
 
-      <input id="email" type="email" placeholder="you@example.com" />
+      <input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e)=>setEmail(e.target.value)} />
       <span><label htmlFor="password" >Password</label></span>
-      <input id="password" type="password" placeholder="password..."/>
+      <input id="password" type="password" placeholder="password..." value={password} onChange={(e)=>setPassword(e.target.value)} onKeyDown={(e)=>e.key==="Enter" && handleLogin()}/>
+
+      {error && <p className="error-msg">{error}</p>}
 
       <div className="options">
 
@@ -50,7 +96,7 @@ function LoginPage({switchMode}){
 
 </div>
 
-      <button className="primary-btn" >Sign In</button>
+      <button className="primary-btn" onClick={handleLogin} disabled={loading}>{loading?"Signing in...":"Sign In"}</button>
 
       <div className="divider">
         <span className="line"></span>
