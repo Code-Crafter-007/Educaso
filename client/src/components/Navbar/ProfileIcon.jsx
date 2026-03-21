@@ -3,6 +3,16 @@ function ProfileIcon() {
 
   const navigate=useNavigate();
 
+  const user=JSON.parse(localStorage.getItem("user"))
+
+  if(user){
+
+    return(
+      <div className="avatar" onClick={()=>navigate('/dashboard')}>
+        {user.firstName.charAt(0).toUpperCase()}
+      </div>
+    )
+  }
   return (
     <button className="icon-btn" onClick={()=>navigate('/auth')}>
       <svg width="22" height="22" fill="none" stroke="#1f2937" strokeWidth="2" viewBox="0 0 24 24">
