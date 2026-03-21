@@ -7,8 +7,8 @@ function AuthIllustration(){
         <img src={classroomImg} alt="classroom" />
       
 
-      <div className="stats-card">
-        <div className="stats-icon">✔</div>
+      <div className="auth-stats-card">
+        <div className="auth-stats-icon">✔</div>
 
         <div>
           <h3>5,000+</h3>

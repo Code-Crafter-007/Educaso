@@ -1,0 +1,103 @@
+.dashboard {
+  padding: 24px;
+  padding-top: 40px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.welcome-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.welcome-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.welcome-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.welcome-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.welcome-close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+
+@media (max-width: 640px) {
+  .dashboard {
+    padding: 16px;
+    padding-top: 70px;
+  }
+
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.learning-section {
+  margin-top: 32px;
+}
+
+.learning-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.learning-section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #131c2fec;
+}
+
+.view-all {
+  font-size: 14px;
+  font-weight: 600;
+  color: #16a34a;
+  cursor: pointer;
+}
+
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.learning-details{
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 27px;
+  margin-top: 32px;
+  align-items: start;
+}

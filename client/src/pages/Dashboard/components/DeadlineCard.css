@@ -1,0 +1,44 @@
+.deadline-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.deadline-item:last-child{
+  border-bottom: none;
+}
+
+.deadline-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.deadline-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.deadline-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.deadline-course {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.deadline-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ef4444;
+}

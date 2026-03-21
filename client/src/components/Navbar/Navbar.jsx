@@ -16,7 +16,7 @@ function Navbar() {
   const isHome=location.pathname==="/"
   
   return (
-    <nav className="navbar">
+    <nav className="navbar sticky-navbar">
       <div className="navbar-container">
 
         <div className="nav-left">

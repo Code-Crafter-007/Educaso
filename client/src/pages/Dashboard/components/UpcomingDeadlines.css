@@ -1,0 +1,41 @@
+.upcoming-deadlines {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #f1f5f9;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.deadlines-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.deadlines-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.view-calendar-btn {
+  margin-top: 12px;
+  padding: 12px;
+  width: 100%;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-calendar-btn:hover {
+  background: #f9fafb;
+  border-color: #22c55e;
+  color: #16a34a;
+}
