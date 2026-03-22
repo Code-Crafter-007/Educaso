@@ -7,7 +7,6 @@ import ThemeToggle from "./ThemeToggle"
 import ProfileIcon from "./ProfileIcon"
 import { Bars3Icon } from "@heroicons/react/24/outline"
 import "./Navbar.css"
-
 import {useLocation} from "react-router-dom"
 
 function Navbar({onMenuClick}) {
@@ -21,7 +20,7 @@ function Navbar({onMenuClick}) {
 
         <div className="nav-left">
           {!isHome && (
-            <button className="icon-btn" onClick={onMenuClick}>
+            <button className="icon-btn three-dot-menu" onClick={onMenuClick}>
               <Bars3Icon width={22} height={22} />
             </button>
           )}

@@ -19,7 +19,8 @@ body{
 
 .navbar-container {
   margin: 0px 1rem;
-  padding: 14px 24px;
+  padding: 14px 0px;
+  padding-right: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -32,9 +33,15 @@ body{
 }
 
 .nav-left {
+  margin: 0px 2px;
   display: flex;
   align-items: center;
   flex-shrink: 0;
+}
+
+.three-dot-menu{
+  margin-left:0px;
+  margin-right: 12px;
 }
 
 .nav-center {
