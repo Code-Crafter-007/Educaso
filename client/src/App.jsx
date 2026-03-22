@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -11,15 +12,25 @@ function App() {
   const isAuth = location.pathname === "/auth";
   const hasSidebar = location.pathname !== "/" && location.pathname !== "/auth";
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <>
-      {!isAuth && <Navbar />}
-      <div className="app-body">
-        {hasSidebar && <Sidebar />}
-        <main className="app-main">
-          <AppRoutes />
-        </main>
-      </div>
+      {!isAuth && <Navbar onMenuClick={() => setSidebarOpen(true)} />}
+
+      {hasSidebar && (
+        <>
+          {/* dark overlay */}
+          {sidebarOpen && (
+            <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+          )}
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        </>
+      )}
+
+      <main className="app-main">
+        <AppRoutes />
+      </main>
     </>
   );
 }

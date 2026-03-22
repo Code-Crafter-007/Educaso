@@ -5,22 +5,27 @@ import BecomeTutor from "./BecomeTutor"
 import CartIcon from "./CartIcon"
 import ThemeToggle from "./ThemeToggle"
 import ProfileIcon from "./ProfileIcon"
+import { Bars3Icon } from "@heroicons/react/24/outline"
 import "./Navbar.css"
 
-import { useLocation } from "react-router-dom"
+import {useLocation} from "react-router-dom"
 
-function Navbar() {
+function Navbar({onMenuClick}) {
 
-  const location=useLocation()
+  const location = useLocation()
+  const isHome = location.pathname === "/"
 
-  const isHome=location.pathname==="/"
-  
   return (
     <nav className="navbar sticky-navbar">
       <div className="navbar-container">
 
         <div className="nav-left">
-          <Logo />                       
+          {!isHome && (
+            <button className="icon-btn" onClick={onMenuClick}>
+              <Bars3Icon width={22} height={22} />
+            </button>
+          )}
+          <Logo />
         </div>
 
         <div className="nav-center">

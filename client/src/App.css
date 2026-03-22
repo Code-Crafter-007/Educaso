@@ -1,8 +1,12 @@
-.app-body {
-  display: flex;
-}
-
 .app-main {
   flex: 1;
   min-width: 0;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 199;
+  backdrop-filter: blur(1px);
 }
