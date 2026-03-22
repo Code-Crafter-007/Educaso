@@ -8,31 +8,37 @@ import "./styles/animations.css";
 import "./App.css";
 
 function App() {
-  const location = useLocation();
-  const isAuth = location.pathname === "/auth";
-  const hasSidebar = location.pathname !== "/" && location.pathname !== "/auth";
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen,setSidebarOpen]=useState(false);
 
-  return (
+  const location=useLocation();
+
+  const isAuth = location.pathname==="/auth"
+  const hasSidebar = location.pathname!=="/" && location.pathname!=="/auth"
+
+  return(
+
     <>
-      {!isAuth && <Navbar onMenuClick={() => setSidebarOpen(true)} />}
-
-      {hasSidebar && (
-        <>
-          {/* dark overlay */}
-          {sidebarOpen && (
-            <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
-          )}
-          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        </>
+    {!isAuth && <Navbar onMenuClick={()=>setSidebarOpen(true)}/>}
+    
+    {hasSidebar &&
+    
+      <>
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={()=>setSidebarOpen(false)}/>
       )}
+      
+      {<Sidebar isOpen={sidebarOpen} onClose={()=>setSidebarOpen(false)}/>}
+      </>
+    }
 
-      <main className="app-main">
-        <AppRoutes />
-      </main>
+    <main className="app-main">
+      <AppRoutes/>
+
+    </main>
+
     </>
-  );
+  )
 }
 
 export default App;
