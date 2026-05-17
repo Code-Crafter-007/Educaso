@@ -6,17 +6,29 @@ function ProfileIcon() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
+  if(!user) navigate("/auth");
+
   const firstLetter = user?.firstName
     ? user.firstName.charAt(0).toUpperCase()
-    : "U";
+    : "T";
+
+  const name=user.firstName+user.lastName;
 
   if (user) {
     return (
+
+      <div>
+
+      <div>
+        {name}
+      </div>
       <div
         className="avatar"
         onClick={() => navigate("/dashboard")}
       >
         {firstLetter}
+      </div>
+
       </div>
     );
   }

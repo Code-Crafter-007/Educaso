@@ -41,8 +41,8 @@ function Navbar({onMenuClick}) {
 
         <div className="nav-right">
 
-          
-          <ExploreCourses />
+
+          {user?.accountType !== "Instructor" &&  <ExploreCourses />}
           {!token && <BecomeTutor/>}      
           {token && role === "Student" && <MyCourses />} 
   
