@@ -9,9 +9,7 @@ function ProtectedRoute({children}){
         return (
 
             <Navigate to="/auth" replace></Navigate>
-
-        )
-        
+        ) 
     }
 
     return children;

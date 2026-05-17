@@ -30,7 +30,6 @@ function AuthPage() {
 
   return (
     <div className="auth-container">
-      
       <div className="panel">
         <div className={`panel-content ${animationIn? "fade-in" : ""}`}>
           {mode==="login"

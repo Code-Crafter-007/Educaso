@@ -9,6 +9,8 @@ import twitter from "../../assets/icons/twitter.png"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { testUsers } from "../../data/testUsers";
+
 function LoginPage({switchMode}){
 
   const [email,setEmail]=useState("")
@@ -17,41 +19,74 @@ function LoginPage({switchMode}){
   const [loading,setLoading]=useState(false)
   const navigate = useNavigate()
 
-  const handleLogin = async()=>{
+  const handleLogin = async () => {
 
-    setError("")
+  setError("");
 
-    if(!email || !password){
-      setError("Please fill all fields!.")
+  if (!email || !password) {
+    setError("Please fill all fields!");
+    return;
+  }
+
+  try {
+
+    setLoading(true);
+
+    // CHECK TEST USERS
+    const testUser = testUsers.find(
+      (user) =>
+        user.email === email &&
+        user.password === password
+    );
+
+    // TEST LOGIN
+    if (testUser) {
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(testUser)
+      );
+
+      localStorage.setItem(
+        "token",
+        "demo-token"
+      );
+
+      navigate("/dashboard");
+
       return;
     }
 
-    try{
-      setLoading(true)
+    // BACKEND LOGIN
+    const data = await loginUser(email, password);
 
-      const data=await loginUser(email,password);
-
-      if(!data || !data.token){
-
-        throw new Error("Invalid credentials")
-      }
-
-      localStorage.setItem("token",data.token);
-      localStorage.setItem("user",JSON.stringify(data.user))
-
-      navigate("/dashboard");
+    if (!data || !data.token) {
+      throw new Error("Invalid credentials");
     }
 
-    catch(err){
+    localStorage.setItem(
+      "token",
+      data.token
+    );
 
-      setError(err.message || "Login Failed");
-    }
+    localStorage.setItem(
+      "user",
+      JSON.stringify(data.user)
+    );
 
-    finally{
-      setLoading(false);
+    navigate("/dashboard");
 
-    }
+  } catch (err) {
 
+    setError(
+      err.message || "Login Failed"
+    );
+
+  } finally {
+
+    setLoading(false);
+
+  }
 };
 
 

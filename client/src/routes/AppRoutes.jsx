@@ -15,6 +15,10 @@ function AppRoutes(){
                     <Dashboard/>
                 </ProtectedRoute>
             }/>
+            
+
+            
+            
 
         </Routes>
     );

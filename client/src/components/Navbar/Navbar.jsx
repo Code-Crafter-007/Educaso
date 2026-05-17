@@ -6,10 +6,18 @@ import CartIcon from "./CartIcon"
 import ThemeToggle from "./ThemeToggle"
 import ProfileIcon from "./ProfileIcon"
 import { Bars3Icon } from "@heroicons/react/24/outline"
+import MyCourses from "./MyCourses"
 import "./Navbar.css"
 import {useLocation} from "react-router-dom"
 
+
+
 function Navbar({onMenuClick}) {
+
+  const token=localStorage.getItem("token")
+  const user = JSON.parse(localStorage.getItem("user"))
+
+  const role=user?.accountType;
 
   const location = useLocation()
   const isHome = location.pathname === "/"
@@ -32,10 +40,15 @@ function Navbar({onMenuClick}) {
         </div>
 
         <div className="nav-right">
+
+          
           <ExploreCourses />
-          <BecomeTutor />
+          {!token && <BecomeTutor/>}      
+          {token && role === "Student" && <MyCourses />} 
+  
           <ThemeToggle />
-          <CartIcon />
+
+          {user?.accountType !== "Instructor" && <CartIcon />}
           <ProfileIcon />
         </div>
 
