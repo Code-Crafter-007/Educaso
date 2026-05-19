@@ -1,56 +1,44 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
 
 function ProfileIcon() {
+  const navigate = useNavigate()
 
-  const navigate = useNavigate();
+  let user = null
+  try {
+    user = JSON.parse(localStorage.getItem("user"))
+  } catch {
+    localStorage.removeItem("user")  // wipe corrupted data
+    return null
+  }
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return null
 
-  if(!user) navigate("/auth");
+  const { firstName = "", lastName = "", accountType = "" } = user
 
-  const firstLetter = user?.firstName
-    ? user.firstName.charAt(0).toUpperCase()
-    : "T";
+  const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase()
+  const name = `${firstName} ${lastName}`.trim()
 
-  const name=user.firstName+user.lastName;
-
-  if (user) {
-    return (
-
-      <div>
-
-      <div>
-        {name}
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex flex-col items-end leading-5">
+        <span className="font-semibold text-sm">{name}</span>
+        {accountType && (
+          <span className="text-xs text-gray-500">{accountType}</span>
+        )}
       </div>
+
       <div
         className="avatar"
         onClick={() => navigate("/dashboard")}
+        role="button"
+        aria-label={`Go to ${name}'s dashboard`}
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && navigate("/dashboard")}
       >
-        {firstLetter}
+        {initials}
       </div>
-
-      </div>
-    );
-  }
-
-  return (
-    <button
-      className="icon-btn"
-      onClick={() => navigate("/auth")}
-    >
-      <svg
-        width="22"
-        height="22"
-        fill="none"
-        stroke="#1f2937"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-      </svg>
-    </button>
-  );
+    </div>
+  )
 }
 
-export default ProfileIcon;
+export default ProfileIcon

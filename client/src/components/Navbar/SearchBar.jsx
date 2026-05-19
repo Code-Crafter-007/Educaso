@@ -3,11 +3,28 @@ import {useState} from "react"
 function SearchBar(){
   const[query,setQuery]=useState("")
 
+  const user=JSON.parse(localStorage.getItem("user"));
+
+  let accountType = null;
+
+  try{
+
+    const user=JSON.parse(localStorage.getItem("user"))
+
+    accountType = user?.accountType ?? null
+  }
+
+  catch {
+    localStorage.removeItem("user")
+  }
+
+  const placeholder = accountType === "Instructor" ? "Search for courses, students, or analytics..." : "Search courses..."
+
   return (
     <div className="search-bar">
       <input
         type="text"
-        placeholder="Search courses..."
+        placeholder={placeholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="search-input"
