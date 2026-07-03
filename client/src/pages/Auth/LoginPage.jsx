@@ -1,4 +1,5 @@
 import {loginUser} from "../../services/authService";
+import { useGoogleLogin } from "@react-oauth/google";
 
 import logo from "../../assets/logo.png";
 import google from "../../assets/icons/google.svg";
@@ -11,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 
 import { testUsers } from "../../data/testUsers";
 
+import axios from "axios"
+
 function LoginPage({switchMode}){
 
   const [email,setEmail]=useState("")
@@ -18,6 +21,22 @@ function LoginPage({switchMode}){
   const [error,setError]=useState("")
   const [loading,setLoading]=useState(false)
   const navigate = useNavigate()
+
+  const googleLogin=useGoogleLogin({
+    
+    flow:"auth-code",
+
+    onSuccess: async(codeResponse)=>{
+      
+      const res=await axios.post("http://localhost:5001/api/auth/google",{
+        code:codeResponse.code,
+      }) 
+
+      console.log("Code Response:", codeResponse);
+      console.log("Backend Response:", res.data);
+    },
+
+    onError:()=>{console.log("Google Login Failed")},})
 
   const handleLogin = async () => {
 
@@ -140,7 +159,7 @@ function LoginPage({switchMode}){
 </div>
 
       <div className="social">
-        <button>
+        <button onClick={()=>{googleLogin()}}>
           <img src={google}/>
         </button>
         <button>

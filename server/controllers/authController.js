@@ -6,6 +6,9 @@ import otpGenerator from "otp-generator";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+
+import {OAuth2Client} from "google-auth-library"
+
 dotenv.config();
 
 //send OTP
@@ -227,5 +230,41 @@ export const changePassword  = async (req,res) =>{
 
     } catch (error) {
         return res.status(500).json({success:false , message : "Issue occur while changing password"})
+    }
+}
+
+//google login
+
+const client=new OAuth2Client(process.env.GOOGLE_CLIENT_ID,process.env.GOOGLE_CLIENT_SECRET)
+export const googleLogin = async(req,res)=>{
+
+    try{
+        const {code}=req.body
+
+        console.log(code);
+
+        const {tokens}= await client.getToken({code,redirect_uri: "postmessage"});
+
+        console.log(tokens);
+
+        const ticket=await client.verifyIdToken({
+
+            idToken:tokens.id_token,
+            audience:process.env.GOOGLE_CLIENT_ID,
+        })
+
+        const payload=ticket.getPayload();
+
+        console.log(payload)
+
+        return res.status(200).json({success:true ,message:"Authorization code exchanged successfully"});
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        return res.status(500).json({success:false,message:"Authorization code exchanged failed"})
+
     }
 }
