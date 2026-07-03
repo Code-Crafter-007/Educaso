@@ -30,7 +30,22 @@ function LoginPage({switchMode}){
       
       const res=await axios.post("http://localhost:5001/api/auth/google",{
         code:codeResponse.code,
-      }) 
+      },
+      {
+        withCredentials: true,
+      })
+      
+      localStorage.setItem(
+      "token",
+      res.data.token
+    );
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(res.data.user)
+    );
+
+    navigate("/dashboard"); 
 
       console.log("Code Response:", codeResponse);
       console.log("Backend Response:", res.data);

@@ -62,6 +62,20 @@ dotenv.config();
 //   }
 // };
 
+const generateToken = (user) => {
+    return jwt.sign(
+        {
+            id: user._id,
+            email: user.email,
+            accountType: user.accountType,
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "7d",
+        }
+    );
+};
+
 //signup
 export const signup = async (req, res) => {
     //Data fetch and validate
@@ -118,7 +132,7 @@ export const signup = async (req, res) => {
 })
         await user.save() 
 
-        let token = jwt.sign({id : user._id , email: user.email, accountType : user.accountType} , process.env.JWT_SECRET , {expiresIn : '7d'})
+        let token = generateToken(user);
 
         // Set cookie
         res.cookie("token" , token  , {
@@ -160,7 +174,7 @@ export const login = async (req,res)=>{
             })
         }
 
-        let token = jwt.sign({id : user._id , email: user.email, accountType : user.accountType} , process.env.JWT_SECRET , {expiresIn : '7d'})
+        let token = generateToken(user);
 
         // Set cookie
         res.cookie("token" , token  , {
@@ -255,9 +269,59 @@ export const googleLogin = async(req,res)=>{
 
         const payload=ticket.getPayload();
 
-        console.log(payload)
+        console.log(payload);
 
-        return res.status(200).json({success:true ,message:"Authorization code exchanged successfully"});
+
+        const user=await User.findOne({
+            email:payload.email
+        })
+
+        if(user){
+
+            const token=generateToken(user)
+
+             res.cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+
+            return res.status(200).json({
+                success: true,
+                token,
+                user,
+                message: "Login successful",
+            });
+        }
+
+        else{
+
+            const profileDetails = await Profile.create({
+            gender: null,
+            contactNumber: null,
+            dateOfBirth: null,
+            about: null,
+            });
+
+            const [firstName,...lastNameParts]=payload.name.split(" ");
+
+            const lastName=lastNameParts.join(" ");
+
+            const newUser=await User.create({firstName,lastName,email:payload.email,provider:"google",image:payload.picture,additionalDetails: profileDetails._id})
+
+            const token=generateToken(newUser)
+
+            res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+});
+
+            return res.status(200).json({success:true ,token,user: newUser,message:"Authorization code exchanged successfully and Login also initiated"});
+
+        }
     }
 
     catch(error){
