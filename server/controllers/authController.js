@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-// import OTP from "../models/OTP.js";
+import OTP from "../models/OTP.js";
 import Profile from "../models/Profile.js";  
 import otpGenerator from "otp-generator";
 // const mailSender = require("../utils/mailSender.js");
@@ -9,58 +9,11 @@ import dotenv from "dotenv";
 
 import {OAuth2Client} from "google-auth-library"
 
+import { generateOTP } from "../utils/generateOtp.js";
+import { sendOTPEmail } from "../services/emailService.js";
+import mongoose from "mongoose";
+
 dotenv.config();
-
-//send OTP
-// export const sendOTP = async (req, res) => {
-//   try {
-//     const { email } = req.body;
-
-//     if (!email) {
-//       return res.status(400).json({ success: false, message: "Email is required" });
-//     }
-
-//     const existingUser = await User.findOne({ email });
-
-//     if (existingUser) {
-//       return res
-//         .status(401)
-//         .json({ success: false, message: "User already exists" });
-//     }
-
-//     let otp = otpGenerator.generate(6, {
-//       upperCaseAlphabets: false,
-//       lowerCaseAlphabets: false,
-//       specialChars: false,
-//     });
-
-//     // Ensure OTP is unique
-//     let isOtpExists = await OTP.findOne({ otp: otp });
-//     while (isOtpExists) {
-//       otp = otpGenerator.generate(6, {
-//         upperCaseAlphabets: false,
-//         lowerCaseAlphabets: false,
-//         specialChars: false,
-//       });
-//       isOtpExists = await OTP.findOne({ otp: otp });
-//     }
-
-//     // Create OTP entry - email will be sent via pre-save middleware
-//     const newOTP = await OTP.create({
-//       email,
-//       otp,
-//     });
-
-//     console.log("OTP generated for:", email)
-
-//     return res
-//       .status(200)
-//       .json({ success: true, message: "OTP sent successfully" });
-//   } catch (error) {
-//     console.log("Send OTP Error:", error)
-//     return res.status(500).json({ success: false, message: "Failed to send OTP. Please try again." })
-//   }
-// };
 
 const generateToken = (user) => {
     return jwt.sign(
@@ -94,22 +47,6 @@ export const signup = async (req, res) => {
             .status(401)
             .json({ success: false, message: "User already exists" });
         }
-        //find OTP
-        // const recentOtp = await OTP.findOne({email}).sort({createdAt:-1}).limit(1)
-        // //OTP verification
-        // if(!recentOtp){
-        //     return res.status(400).json({
-        //         success : false ,
-        //         message : "OTP not Found"
-        //     })
-        // }
-        
-        // else if(otp !== recentOtp.otp){
-        //     return res.status(400).json({
-        //         success : false ,
-        //         message : "Invalid OTP"
-        //     })
-        // } 
 
         //Password hash
         const hashedPassword = await bcrypt.hash(password , 10)
@@ -250,6 +187,7 @@ export const changePassword  = async (req,res) =>{
 //google login
 
 const client=new OAuth2Client(process.env.GOOGLE_CLIENT_ID,process.env.GOOGLE_CLIENT_SECRET)
+
 export const googleLogin = async(req,res)=>{
 
     try{
@@ -331,4 +269,223 @@ export const googleLogin = async(req,res)=>{
         return res.status(500).json({success:false,message:"Authorization code exchanged failed"})
 
     }
+}
+
+//otp send for register
+
+export const sendOTP= async(req,res)=>{
+
+    try{
+    const {email} = req.body;
+
+    if (!email){
+
+    return res.status(400).json({
+
+        success: false,
+
+        message: "Email is required"
+
+    });
+
+    }
+
+    const existingUser=await User.findOne({email})
+
+    if(existingUser){
+
+        return res.status(409).json({
+            success:false,
+            message:"User already exists"
+
+        })
+    }
+
+    const otpRecord= await OTP.findOne({email});
+
+    if(otpRecord){
+
+        const diff=Date.now()-otpRecord.lastSentAt.getTime();
+
+        if (diff<30*1000) {
+
+        return res.status(429).json({
+
+            success: false,
+
+            message: "Please wait 30 seconds before requesting another OTP."
+
+        });
+
+    }
+    
+    const otp=generateOTP(4);
+
+    console.log("Generated OTP:", otp);
+    
+    const otpHash= await bcrypt.hash(otp,10)
+
+    const expiresAt=new Date(Date.now()+5*60*1000);
+
+    await OTP.findOneAndUpdate(
+
+        {email},
+        {otpHash,
+        expiresAt,
+        attempts:0
+        },
+        {
+            upsert:true,
+            new:true
+        }
+    )
+
+    try{
+
+        await sendOTPEmail(email,otp);
+    }
+
+    catch(err){
+
+        await OTP.deleteOne({email});
+
+        return res.status(500).json({
+            success:false,
+            message:"Failed to send OTP"
+        })
+    }
+
+    return res.status(200).json({
+
+        success:true,
+        message:"OTP Sent successfully"
+
+    })}
+
+}
+
+    catch(error){
+
+        return res.status(500).json({
+            success:false,
+            message:"Internal Server Error"
+        });
+    }
+
+}
+
+//verifyOTP for user
+
+export const verifyOTP=async(req,res)=>{
+
+    try{
+
+        const {firstName,lastName,email,password,accountType,provider}=req.body;
+
+        if(!email || !otp){
+            
+            return res.status(400).json({
+
+                success:false,
+                message:"Email and otp is required"    
+            });
+        }
+
+        const otpRecord=await OTP.findOne({email});
+
+        if(!otpRecord){
+
+            return res.status(400).json({
+
+                success:false,
+                message:"Otp not found"
+            })
+        }
+
+        if(Date.now()>otpRecord.expiresAt){
+
+            await OTP.deleteOne({email})
+
+            return res.status(400).json({
+
+                success:false,
+                message:"Otp has expired Retry again"
+            });
+        }
+
+            const isMatch=await bcrypt.compare(otp,otpRecord.otpHash);
+
+            if(!isMatch){
+
+                otpRecord.attempts++;
+                await otpRecord.save();
+
+                if(otpRecord.attempts>=3){
+
+                    await OTP.deleteOne({email})
+
+                    return res.status(400).json({
+
+                        success:false,
+                        message:"Maximum Attempts reached out! Try again"
+                    });
+                }
+
+                return res.json({
+                    success: false,
+                    message: "Invalid OTP"
+                })
+            }
+
+            if(isMatch){
+
+                const session=await mongoose.startSession();
+
+                session.startTransaction();
+
+                try{
+
+                    const hashedPassword=await bcrypt.hash(password,10)
+
+                    await User.create([
+                        {
+
+                            firstName:otpRecord.firstName,
+                            lastName:otpRecord.lastName,
+                            email:otpRecord.email,
+                            password:otpRecord.password,
+                            accountType:otpRecord.accountType,
+                            provider:otpRecord.provider
+
+                        }
+                    ],{session});
+
+                    await OTP.deleteOne({email},{session});
+
+                    await session.commitTransaction();
+                }
+
+                catch(err){
+
+                    console.log(err);
+
+                    await session.abortTransaction();
+                }
+            }
+    }
+
+    catch(err){
+
+        console.log(error);
+
+        return res.status.json({
+
+            success:false,
+            message:"Internal Server Error"
+        })
+    }
+
+    finally{
+
+    session.endSession();}
 }
